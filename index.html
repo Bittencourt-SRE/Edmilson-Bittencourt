@@ -17,7 +17,15 @@
 .grid-projetos{display: grid;grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));gap: 30px;margin-top: 30px;}
 .card-projeto{background: rgba(255,255,255,0.95);border-radius: 20px;overflow: hidden;box-shadow: 0 8px 25px rgba(0,74,153,0.2);transition: 0.3s;border: 1px solid rgba(0,123,255,0.2);text-align: left;}
 .card-projeto:hover{transform: translateY(-10px);box-shadow: 0 15px 40px rgba(0,74,153,0.3);}
-.card-projeto img{width: 100%;height: 200px;object-fit: cover;background: #007BFF;}
+
+.card-projeto img{
+    width: 100%;
+    height: 200px; /* quadrado continua com 200px */
+    object-fit: contain; /* mostra a foto inteira */
+    background: #f0f4f9; /* fundo cinza clarinho pra não ficar buraco branco */
+    padding: 10px; /* dá um respiro na foto */
+}
+
 .card-conteudo{padding: 20px;}
 .card-projeto h3{color: #004a99; font-size: 1.5rem; margin-bottom: 10px;}
 .card-projeto p{color: #444; margin-bottom: 20px; min-height: 60px;}
@@ -45,7 +53,6 @@
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRdrODbSUGBAJEGawcIqzyRLGA-P60A1nPnMJH9OTT-MRIuANdilj3rL-mrbslWppKpFG0OTZAa7KtV/pub?output=csv";
 
-// MESMA FUNÇÃO DO D'CESTAS - MAIS ESTÁVEL PRA DRIVE
 function converterLinkDrive(link) {
   if(!link) return "";
   link = link.replace(/"/g, '').trim();
@@ -78,13 +85,13 @@ async function carregarProjetos() {
     try {
         const res = await fetch(CSV_URL);
         const data = await res.text();
-        const dados = parseCSV(data).filter(p => p['Projeto']); // ignora linha vazia
+        const dados = parseCSV(data).filter(p => p['Projeto']);
 
         const container = document.getElementById('lista-projetos');
         container.innerHTML = '';
 
         dados.forEach(projeto => {
-            const imagem = converterLinkDrive(projeto['Imagem Capa']); // PUXA DA COLUNA IMAGEM CAPA
+            const imagem = converterLinkDrive(projeto['Imagem Capa']);
 
             const card = `
                 <div class="card-projeto">
