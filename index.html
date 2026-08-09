@@ -9,44 +9,34 @@
     body{color:#1a1a1a; overflow-x:hidden;}
     #video-bg {position: fixed;top: 0;left: 0;width: 100%;height: 100%;object-fit: cover;z-index: -2;}
 .overlay {position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: rgba(0, 74, 153, 0.25);z-index: -1;}
-    header{text-align: center;padding: 80px 20px 40px 20px;background: linear-gradient(to bottom, rgba(255,255,255,0.9), transparent);}
-    header h1{font-size: 3rem;color: #004a99;text-shadow: 0 2px 15px rgba(255,255,255,1);}
-    header p{font-size: 1.2rem;color: #222;font-weight: 600;}
-.sobre,.projetos,.contato{max-width: 1100px;margin: 60px auto;padding: 40px 20px;text-align: center;background: rgba(255,255,255,0.9);border-radius: 20px;backdrop-filter: blur(12px);box-shadow: 0 8px 30px rgba(0,0,0,0.15);}
-.sobre h2,.projetos h2,.contato h2{color: #004a99; font-size: 2.2rem; margin-bottom: 20px;}
+    header{text-align: center;padding: 80px 20px 40px 20px;background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);}
+    header h1{font-size: 3rem;color: #fff;text-shadow: 0 2px 15px rgba(0,0,0,0.7);}
+    header p{font-size: 1.2rem;color: #fff;font-weight: 600;text-shadow: 0 2px 10px rgba(0,0,0,0.7);}
+.sobre,.projetos,.contato{max-width: 1100px;margin: 60px auto;padding: 40px 20px;text-align: center;background: rgba(0,0,0,0.4);border-radius: 20px;backdrop-filter: blur(8px);box-shadow: 0 8px 30px rgba(0,0,0,0.3);color: #fff;}
+.sobre h2,.projetos h2,.contato h2{color: #fff; font-size: 2.2rem; margin-bottom: 20px;text-shadow: 0 2px 10px rgba(0,0,0,0.5);}
+.sobre p{color: #eee;}
 .grid-projetos{display: grid;grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));gap: 30px;margin-top: 30px;}
-.card-projeto{background: rgba(255,255,255,0.95);border-radius: 20px;overflow: hidden;box-shadow: 0 8px 25px rgba(0,74,153,0.2);transition: 0.3s;border: 1px solid rgba(0,123,255,0.2);text-align: left;}
-.card-projeto:hover{transform: translateY(-10px);box-shadow: 0 15px 40px rgba(0,74,153,0.3);}
-
-/* WRAPPER PRA FAZER O FUNDO FICAR BONITO */
-.img-wrapper{
-    width: 100%;
-    height: 200px; /* quadrado fixo */
-    background: #004a99; /* cor de fundo se a foto for pequena */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
+.card-projeto{background: rgba(0,0,0,0.35);border-radius: 20px;overflow: hidden;box-shadow: 0 8px 25px rgba(0,0,0,0.4);transition: 0.3s;border: 1px solid rgba(255,255,255,0.15);backdrop-filter: blur(10px);text-align: left;}
+.card-projeto:hover{transform: translateY(-10px);box-shadow: 0 15px 40px rgba(0,0,0,0.5);}
 
 .card-projeto img{
     width: 100%;
-    height: 100%;
-    object-fit: contain; /* NÃO CORTA A FOTO */
-    object-position: center;
+    height: 200px; /* quadrado fixo */
+    object-fit: cover; /* PREENCHE E CORTA */
+    display: block;
 }
 
 .card-conteudo{padding: 20px;}
-.card-projeto h3{color: #004a99; font-size: 1.5rem; margin-bottom: 10px;}
-.card-projeto p{color: #444; margin-bottom: 20px; min-height: 60px;}
-.btn-projeto{display: inline-block;padding: 12px 25px;background: #007BFF;color: #fff;text-decoration: none;border-radius: 30px;font-weight: bold;transition: 0.3s;}
+.card-projeto h3{color: #fff; font-size: 1.5rem; margin-bottom: 10px;}
+.card-projeto p{color: #ddd; margin-bottom: 20px; min-height: 60px;}
+.btn-projeto{display: inline-block;padding: 10px 20px;background: #007BFF;color: #fff;text-decoration: none;border-radius: 25px;font-weight: bold;font-size: 0.9rem;transition: 0.3s;} /* BOTÃO MENOR */
 .btn-projeto:hover{background: #004a99; transform: scale(1.05);}
-.loading{text-align: center; padding: 40px; font-size: 1.2rem; color: #004a99;}
-.botoes-contato{display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top:20px;}
-.btn-contato{padding: 15px 30px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 1.1rem; transition: 0.3s; color:#fff;}
+.loading{text-align: center; padding: 40px; font-size: 1.2rem; color: #fff;}
+.botoes-contato{display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top:20px;}
+.btn-contato{padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: bold; font-size: 1rem; transition: 0.3s; color:#fff;} /* BOTÕES MENORES */
 .btn-whats{background: #25D366;}.btn-insta{background: linear-gradient(45deg, #f09433, #bc1888);}.btn-email{background: #007BFF;}
 .btn-contato:hover{transform: scale(1.05);}
-    footer{text-align: center; padding: 20px; background: rgba(0,74,153,0.15); color: #004a99; font-weight: 500;}
+    footer{text-align: center; padding: 20px; background: rgba(0,0,0,0.3); color: #ddd; font-weight: 500; backdrop-filter: blur(5px);}
 </style>
 </head>
 <body>
@@ -105,9 +95,7 @@ async function carregarProjetos() {
 
             const card = `
                 <div class="card-projeto">
-                    <div class="img-wrapper">
-                        <img src="${imagem || `https://via.placeholder.com/400x200/007BFF/FFFFFF?text=${encodeURIComponent(projeto['Projeto'])}`}" alt="${projeto['Projeto']}" onerror="this.src='https://via.placeholder.com/400x200/FF0000/FFFFFF?text=Erro+Imagem'">
-                    </div>
+                    <img src="${imagem || `https://via.placeholder.com/400x200/007BFF/FFFFFF?text=${encodeURIComponent(projeto['Projeto'])}`}" alt="${projeto['Projeto']}" onerror="this.src='https://via.placeholder.com/400x200/FF0000/FFFFFF?text=Erro+Imagem'">
                     <div class="card-conteudo">
                         <h3>${projeto['Projeto']}</h3>
                         <p>${projeto['Descricao']}</p>
