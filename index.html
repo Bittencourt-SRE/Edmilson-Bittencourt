@@ -7,68 +7,28 @@
 <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI', sans-serif;scroll-behavior:smooth;}
     
-    body{color:#1a1a1a; overflow-x:hidden; background: linear-gradient(to bottom, #87CEEB 0%, #4682B4 100%);}
+    body{color:#1a1a1a; overflow-x:hidden;}
 
-    /* FUNDO MAR ANIMADO VIA SVG */
-    .ocean {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 50vh;
-        z-index: -2;
-    }
-    .ocean svg {
-        position: absolute;
-        bottom: 0;
-        width: 200%;
-        height: 100%;
-    }
-    .wave {
-        animation: wave 20s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
-    }
-    .wave:nth-child(2) {
-        animation: wave 15s cubic-bezier(0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
-        opacity: 0.7;
-    }
-    .wave:nth-child(3) {
-        animation: wave 12s cubic-bezier(0.36, 0.45, 0.63, 0.53) -.25s infinite, swell 5s ease -0.5s infinite;
-        opacity: 0.4;
-    }
-    @keyframes wave {
-        0% { margin-left: -1000px; }
-        100% { margin-left: 0; }
-    }
-    @keyframes swell {
-        0%, 100% { transform: translateY(-5px); }
-        50% { transform: translateY(5px); }
-    }
-
-    /* PARTICULAS DE REFLEXO DO SOL NA AGUA */
-    .sparkle {
+    /* VIDEO DE FUNDO MAR REAL */
+    #video-bg {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        pointer-events: none;
+        object-fit: cover; /* cobre a tela toda */
+        z-index: -2;
+    }
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(135, 206, 235, 0.2); /* azul claro por cima */
         z-index: -1;
     }
-    .sparkle span {
-        position: absolute;
-        width: 3px;
-        height: 3px;
-        background: rgba(255,255,255,0.8);
-        border-radius: 50%;
-        animation: sparkle 6s linear infinite;
-    }
-    @keyframes sparkle {
-        0% { opacity: 0; transform: translateY(0); }
-        50% { opacity: 1; }
-        100% { opacity: 0; transform: translateY(-100vh); }
-    }
 
-    /* HEADER */
     header{
         text-align: center;
         padding: 80px 20px 40px 20px;
@@ -77,7 +37,6 @@
     header h1{
         font-size: 3rem;
         color: #004a99;
-        margin-bottom: 10px;
         text-shadow: 0 2px 15px rgba(255,255,255,1);
     }
     header p{
@@ -86,50 +45,27 @@
         font-weight: 600;
     }
 
-    /* SEÇÃO SOBRE */
-    .sobre{
-        max-width: 800px;
-        margin: 40px auto;
+    .sobre, .projetos, .contato{
+        max-width: 1100px;
+        margin: 60px auto;
         padding: 40px 20px;
         text-align: center;
         background: rgba(255,255,255,0.85);
         border-radius: 20px;
         backdrop-filter: blur(12px);
-        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
     }
-    .sobre h2{color: #004a99; margin-bottom: 15px; font-size: 2rem;}
-    .sobre p{font-size: 1.1rem; line-height: 1.7; color: #333;}
-
-    /* SEÇÃO PROJETOS */
-    .projetos{
-        max-width: 1100px;
-        margin: 60px auto;
-        padding: 0 20px;
-    }
-    .projetos h2{text-align: center; color: #004a99; font-size: 2.2rem; margin-bottom: 40px;}
-    
     .grid-projetos{
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 30px;
+        margin-top: 30px;
     }
-    
     .card-projeto{
         background: rgba(255,255,255,0.9);
         border-radius: 20px;
         padding: 25px;
-        text-align: center;
-        backdrop-filter: blur(12px);
         box-shadow: 0 8px 25px rgba(0,74,153,0.2);
-        transition: 0.3s;
-        border: 1px solid rgba(0,123,255,0.3);
     }
-    .card-projeto:hover{
-        transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(0,74,153,0.3);
-    }
-    .card-projeto h3{color: #004a99; font-size: 1.5rem; margin-bottom: 10px;}
-    .card-projeto p{color: #444; margin-bottom: 20px; min-height: 50px;}
     .btn-projeto{
         display: inline-block;
         padding: 12px 25px;
@@ -138,48 +74,18 @@
         text-decoration: none;
         border-radius: 30px;
         font-weight: bold;
-        transition: 0.3s;
+        margin-top: 10px;
     }
-    .btn-projeto:hover{background: #004a99; transform: scale(1.05);}
-
-    /* CONTATO */
-    .contato{
-        text-align: center;
-        padding: 60px 20px;
-        background: rgba(255,255,255,0.85);
-        margin-top: 60px;
-    }
-    .contato h2{color: #004a99; font-size: 2rem; margin-bottom: 20px;}
-    .botoes-contato{display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;}
-    .btn-contato{
-        padding: 15px 30px;
-        border-radius: 30px;
-        text-decoration: none;
-        font-weight: bold;
-        font-size: 1.1rem;
-        transition: 0.3s;
-    }
-    .btn-whats{background: #25D366; color: #fff;}
-    .btn-insta{background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff;}
-    .btn-email{background: #007BFF; color: #fff;}
-    .btn-contato:hover{transform: scale(1.05);}
-
-    footer{text-align: center; padding: 20px; background: rgba(0,74,153,0.15); color: #004a99; font-weight: 500;}
 </style>
 </head>
 <body>
 
-<!-- PARTICULAS REFLEXO -->
-<div class="sparkle" id="sparkle"></div>
-
-<!-- ONDAS SVG -->
-<div class="ocean">
-    <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-        <path class="wave" d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".3" fill="#00BFFF"/>
-        <path class="wave" d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="#1E90FF"/>
-        <path class="wave" d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="#007BFF"/>
-    </svg>
-</div>
+<!-- VIDEO DE FUNDO MAR - AGORA LOCAL -->
+<video autoplay muted loop playsinline id="video-bg">
+    <source src="mar.mp4" type="video/mp4">
+    Seu navegador não suporta vídeo.
+</video>
+<div class="overlay"></div>
 
 <header>
     <h1>Edmilson</h1>
@@ -188,11 +94,7 @@
 
 <section class="sobre">
     <h2>Sobre Mim</h2>
-    <p>
-        Eu crio sites e soluções digitais que vendem de verdade. 
-        Meu foco é transformar ideias em páginas profissionais, rápidas e bonitas 
-        que geram resultado pra barbearias, lojas e marcas.
-    </p>
+    <p>Eu crio sites e soluções digitais que vendem de verdade.</p>
 </section>
 
 <section class="projetos">
@@ -200,47 +102,15 @@
     <div class="grid-projetos">
         <div class="card-projeto">
             <h3>PH Imports</h3>
-            <p>Loja de iPhones com garantia, pagamento na entrega e design premium.</p>
-            <a href="#" class="btn-projeto">Ver Projeto</a>
-        </div>
-        <div class="card-projeto">
-            <h3>D'cestas</h3>
-            <p>E-commerce de cestas e presentes com carrinho e checkout direto no WhatsApp.</p>
-            <a href="#" class="btn-projeto">Ver Projeto</a>
-        </div>
-        <div class="card-projeto">
-            <h3>Barbearia do PH</h3>
-            <p>Site institucional com agendamento online e vitrine de serviços.</p>
+            <p>Loja de iPhones com garantia.</p>
             <a href="#" class="btn-projeto">Ver Projeto</a>
         </div>
     </div>
 </section>
 
-<section class="contato">
-    <h2>Vamos trabalhar juntos?</h2>
-    <div class="botoes-contato">
-        <a href="#" class="btn-contato btn-whats">WhatsApp</a>
-        <a href="#" class="btn-contato btn-insta">Instagram</a>
-        <a href="#" class="btn-contato btn-email">E-mail</a>
-    </div>
-</section>
-
-<footer>
-    <p>© 2026 Edmilson. Todos os direitos reservados.</p>
+<footer style="text-align:center; padding:20px; background: rgba(0,74,153,0.15); color: #004a99;">
+    <p>© 2026 Edmilson</p>
 </footer>
-
-<script>
-    // Gera partículas de reflexo do sol
-    const sparkle = document.getElementById('sparkle');
-    for(let i = 0; i < 50; i++) {
-        let span = document.createElement('span');
-        span.style.left = Math.random() * 100 + 'vw';
-        span.style.top = Math.random() * 100 + 'vh';
-        span.style.animationDelay = Math.random() * 6 + 's';
-        span.style.animationDuration = 3 + Math.random() * 4 + 's';
-        sparkle.appendChild(span);
-    }
-</script>
 
 </body>
 </html>
