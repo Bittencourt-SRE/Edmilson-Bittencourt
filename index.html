@@ -45,62 +45,54 @@
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRdrODbSUGBAJEGawcIqzyRLGA-P60A1nPnMJH9OTT-MRIuANdilj3rL-mrbslWppKpFG0OTZAa7KtV/pub?output=csv";
 
-// CONVERSOR AUTOMATICO DE LINK DO DRIVE
-function converterLinkDrive(url) {
-    if(!url) return '';
-    url = url.trim();
-
-    let id = '';
-    // Pega ID de https://drive.google.com/file/d/ID/view
-    if(url.includes('/file/d/')){
-        id = url.split('/file/d/')[1].split('/')[0];
-    }
-    // Pega ID de https://drive.google.com/open?id=ID
-    else if(url.includes('id=')){
-        id = url.split('id=')[1].split('&')[0];
-    }
-
-    if(id) return `https://drive.google.com/uc?export=view&id=${id}`;
-    return url; // se já for link direto, retorna ele
+// MESMA FUNÇÃO DO D'CESTAS - MAIS ESTÁVEL PRA DRIVE
+function converterLinkDrive(link) {
+  if(!link) return "";
+  link = link.replace(/"/g, '').trim();
+  const match = link.match(/\/d\/([a-zA-Z0-9-_]+)/);
+  if (match && match[1]) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
+  return link;
 }
 
 function parseCSV(text) {
-    const linhas = []; let linha = []; let campo = ''; let aspas = false;
-    for(let i=0; i<text.length; i++){
-        let c = text[i], p = text[i+1];
-        if(c === '"' && p === '"'){ campo += '"'; i++; }
-        else if(c === '"'){ aspas =!aspas; }
-        else if(c === ',' &&!aspas){ linha.push(campo); campo = ''; }
-        else if((c === '\n' || c === '\r') &&!aspas){ linha.push(campo); linhas.push(linha); linha = []; campo = ''; }
-        else{ campo += c; }
-    }
-    if(campo || linha.length) { linha.push(campo); linhas.push(linha); }
-    return linhas;
+  const rows = [];
+  let row = [], cell = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i], next = text[i+1];
+    if (char === '"') {
+      if (inQuotes && next === '"') { cell += '"'; i++; }
+      else { inQuotes =!inQuotes; }
+    } else if (char === ',' &&!inQuotes) {
+      row.push(cell); cell = '';
+    } else if ((char === '\n' || char === '\r') &&!inQuotes) {
+      if (cell!== '' || row.length > 0) { row.push(cell); rows.push(row); row = []; cell = ''; }
+      if (char === '\r' && next === '\n') i++;
+    } else { cell += char; }
+  }
+  if (cell!== '' || row.length > 0) { row.push(cell); rows.push(row); }
+  const headers = rows[0];
+  return rows.slice(1).map(r => Object.fromEntries(headers.map((h, i) => [h.trim(), r[i]?.trim() || ''])));
 }
 
 async function carregarProjetos() {
     try {
         const res = await fetch(CSV_URL);
         const data = await res.text();
-        const linhas = parseCSV(data);
-        linhas.shift(); // remove cabeçalho
+        const dados = parseCSV(data).filter(p => p['Projeto']); // ignora linha vazia
 
         const container = document.getElementById('lista-projetos');
         container.innerHTML = '';
 
-        linhas.forEach(linha => {
-            const [nome, link, descricao, imagem] = linha.map(i => i? i.trim() : '');
-            if(!nome) return;
-
-            const imagemFinal = converterLinkDrive(imagem); // << CONVERTE AQUI
+        dados.forEach(projeto => {
+            const imagem = converterLinkDrive(projeto['Imagem Capa']); // PUXA DA COLUNA IMAGEM CAPA
 
             const card = `
                 <div class="card-projeto">
-                    <img src="${imagemFinal || `https://via.placeholder.com/400x200/007BFF/FFFFFF?text=${encodeURIComponent(nome)}`}" alt="${nome}" onerror="this.src='https://via.placeholder.com/400x200/FF0000/FFFFFF?text=Erro+Imagem'">
+                    <img src="${imagem || `https://via.placeholder.com/400x200/007BFF/FFFFFF?text=${encodeURIComponent(projeto['Projeto'])}`}" alt="${projeto['Projeto']}" onerror="this.src='https://via.placeholder.com/400x200/FF0000/FFFFFF?text=Erro+Imagem'">
                     <div class="card-conteudo">
-                        <h3>${nome}</h3>
-                        <p>${descricao}</p>
-                        <a href="${link}" target="_blank" class="btn-projeto">Ver Site Ao Vivo</a>
+                        <h3>${projeto['Projeto']}</h3>
+                        <p>${projeto['Descricao']}</p>
+                        <a href="${projeto['Link Site']}" target="_blank" class="btn-projeto">Ver Site Ao Vivo</a>
                     </div>
                 </div>
             `;
