@@ -7,27 +7,65 @@
 <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI', sans-serif;scroll-behavior:smooth;}
     
-    body{color:#1a1a1a; overflow-x:hidden;}
+    body{color:#1a1a1a; overflow-x:hidden; background: linear-gradient(to bottom, #87CEEB 0%, #4682B4 100%);}
 
-    /* VIDEO DE FUNDO MAR REAL */
-    #video-bg {
+    /* FUNDO MAR ANIMADO VIA SVG */
+    .ocean {
         position: fixed;
-        top: 0;
+        bottom: 0;
         left: 0;
         width: 100%;
-        height: 100%;
-        object-fit: cover; /* cobre a tela toda sem distorcer */
+        height: 50vh;
         z-index: -2;
     }
-    /* CAMADA AZUL CLARA POR CIMA PRA DAR CLAREZA E "DIA CLARO" */
-    .overlay {
+    .ocean svg {
+        position: absolute;
+        bottom: 0;
+        width: 200%;
+        height: 100%;
+    }
+    .wave {
+        animation: wave 20s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+    }
+    .wave:nth-child(2) {
+        animation: wave 15s cubic-bezier(0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
+        opacity: 0.7;
+    }
+    .wave:nth-child(3) {
+        animation: wave 12s cubic-bezier(0.36, 0.45, 0.63, 0.53) -.25s infinite, swell 5s ease -0.5s infinite;
+        opacity: 0.4;
+    }
+    @keyframes wave {
+        0% { margin-left: -1000px; }
+        100% { margin-left: 0; }
+    }
+    @keyframes swell {
+        0%, 100% { transform: translateY(-5px); }
+        50% { transform: translateY(5px); }
+    }
+
+    /* PARTICULAS DE REFLEXO DO SOL NA AGUA */
+    .sparkle {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(135, 206, 235, 0.2); /* azul céu clarinho */
+        pointer-events: none;
         z-index: -1;
+    }
+    .sparkle span {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: rgba(255,255,255,0.8);
+        border-radius: 50%;
+        animation: sparkle 6s linear infinite;
+    }
+    @keyframes sparkle {
+        0% { opacity: 0; transform: translateY(0); }
+        50% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(-100vh); }
     }
 
     /* HEADER */
@@ -46,7 +84,6 @@
         font-size: 1.2rem;
         color: #222;
         font-weight: 600;
-        text-shadow: 0 1px 10px rgba(255,255,255,0.9);
     }
 
     /* SEÇÃO SOBRE */
@@ -69,7 +106,7 @@
         margin: 60px auto;
         padding: 0 20px;
     }
-    .projetos h2{text-align: center; color: #004a99; font-size: 2.2rem; margin-bottom: 40px; text-shadow: 0 1px 10px rgba(255,255,255,0.8);}
+    .projetos h2{text-align: center; color: #004a99; font-size: 2.2rem; margin-bottom: 40px;}
     
     .grid-projetos{
         display: grid;
@@ -102,7 +139,6 @@
         border-radius: 30px;
         font-weight: bold;
         transition: 0.3s;
-        box-shadow: 0 4px 15px rgba(0,123,255,0.4);
     }
     .btn-projeto:hover{background: #004a99; transform: scale(1.05);}
 
@@ -128,23 +164,22 @@
     .btn-email{background: #007BFF; color: #fff;}
     .btn-contato:hover{transform: scale(1.05);}
 
-    /* RODAPE */
     footer{text-align: center; padding: 20px; background: rgba(0,74,153,0.15); color: #004a99; font-weight: 500;}
-
-    @media(max-width: 768px){
-        header h1{font-size: 2.2rem;}
-        .sobre, .projetos{padding: 20px;}
-    }
 </style>
 </head>
 <body>
 
-<!-- VIDEO DE FUNDO MAR - Vídeo de Marianna Sigov no Pexels -->
-<video autoplay muted loop playsinline id="video-bg">
-    <source src="https://videos.pexels.com/video-files/35447924/35447924-uhd_2560_1440_30fps.mp4" type="video/mp4">
-    Seu navegador não suporta vídeo.
-</video>
-<div class="overlay"></div>
+<!-- PARTICULAS REFLEXO -->
+<div class="sparkle" id="sparkle"></div>
+
+<!-- ONDAS SVG -->
+<div class="ocean">
+    <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path class="wave" d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".3" fill="#00BFFF"/>
+        <path class="wave" d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="#1E90FF"/>
+        <path class="wave" d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="#007BFF"/>
+    </svg>
+</div>
 
 <header>
     <h1>Edmilson</h1>
@@ -163,25 +198,21 @@
 <section class="projetos">
     <h2>Meus Projetos</h2>
     <div class="grid-projetos">
-        
         <div class="card-projeto">
             <h3>PH Imports</h3>
             <p>Loja de iPhones com garantia, pagamento na entrega e design premium.</p>
             <a href="#" class="btn-projeto">Ver Projeto</a>
         </div>
-
         <div class="card-projeto">
             <h3>D'cestas</h3>
             <p>E-commerce de cestas e presentes com carrinho e checkout direto no WhatsApp.</p>
             <a href="#" class="btn-projeto">Ver Projeto</a>
         </div>
-
         <div class="card-projeto">
             <h3>Barbearia do PH</h3>
             <p>Site institucional com agendamento online e vitrine de serviços.</p>
             <a href="#" class="btn-projeto">Ver Projeto</a>
         </div>
-
     </div>
 </section>
 
@@ -197,6 +228,19 @@
 <footer>
     <p>© 2026 Edmilson. Todos os direitos reservados.</p>
 </footer>
+
+<script>
+    // Gera partículas de reflexo do sol
+    const sparkle = document.getElementById('sparkle');
+    for(let i = 0; i < 50; i++) {
+        let span = document.createElement('span');
+        span.style.left = Math.random() * 100 + 'vw';
+        span.style.top = Math.random() * 100 + 'vh';
+        span.style.animationDelay = Math.random() * 6 + 's';
+        span.style.animationDuration = 3 + Math.random() * 4 + 's';
+        sparkle.appendChild(span);
+    }
+</script>
 
 </body>
 </html>
