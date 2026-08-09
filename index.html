@@ -16,7 +16,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover; /* cobre a tela toda */
+        object-fit: cover;
         z-index: -2;
     }
     .overlay {
@@ -25,14 +25,14 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(135, 206, 235, 0.2); /* azul claro por cima */
+        background: rgba(0, 74, 153, 0.25); /* azul por cima pra dar contraste */
         z-index: -1;
     }
 
     header{
         text-align: center;
         padding: 80px 20px 40px 20px;
-        background: linear-gradient(to bottom, rgba(255,255,255,0.85), transparent);
+        background: linear-gradient(to bottom, rgba(255,255,255,0.9), transparent);
     }
     header h1{
         font-size: 3rem;
@@ -50,22 +50,42 @@
         margin: 60px auto;
         padding: 40px 20px;
         text-align: center;
-        background: rgba(255,255,255,0.85);
+        background: rgba(255,255,255,0.9);
         border-radius: 20px;
         backdrop-filter: blur(12px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
     }
+    .sobre h2, .projetos h2, .contato h2{color: #004a99; font-size: 2.2rem; margin-bottom: 20px;}
+    
     .grid-projetos{
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
         gap: 30px;
         margin-top: 30px;
     }
+    
     .card-projeto{
-        background: rgba(255,255,255,0.9);
+        background: rgba(255,255,255,0.95);
         border-radius: 20px;
-        padding: 25px;
+        overflow: hidden;
         box-shadow: 0 8px 25px rgba(0,74,153,0.2);
+        transition: 0.3s;
+        border: 1px solid rgba(0,123,255,0.2);
+        text-align: left;
     }
+    .card-projeto:hover{
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,74,153,0.3);
+    }
+    .card-projeto img{
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        background: #007BFF;
+    }
+    .card-conteudo{padding: 20px;}
+    .card-projeto h3{color: #004a99; font-size: 1.5rem; margin-bottom: 10px;}
+    .card-projeto p{color: #444; margin-bottom: 20px; min-height: 60px;}
     .btn-projeto{
         display: inline-block;
         padding: 12px 25px;
@@ -74,16 +94,24 @@
         text-decoration: none;
         border-radius: 30px;
         font-weight: bold;
-        margin-top: 10px;
+        transition: 0.3s;
     }
+    .btn-projeto:hover{background: #004a99; transform: scale(1.05);}
+    
+    .loading{text-align: center; padding: 40px; font-size: 1.2rem; color: #004a99;}
+
+    .botoes-contato{display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top:20px;}
+    .btn-contato{padding: 15px 30px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 1.1rem; transition: 0.3s; color:#fff;}
+    .btn-whats{background: #25D366;} .btn-insta{background: linear-gradient(45deg, #f09433, #bc1888);} .btn-email{background: #007BFF;}
+    .btn-contato:hover{transform: scale(1.05);}
+
+    footer{text-align: center; padding: 20px; background: rgba(0,74,153,0.15); color: #004a99; font-weight: 500;}
 </style>
 </head>
 <body>
 
-<!-- VIDEO DE FUNDO MAR - AGORA LOCAL -->
 <video autoplay muted loop playsinline id="video-bg">
     <source src="mar.mp4" type="video/mp4">
-    Seu navegador não suporta vídeo.
 </video>
 <div class="overlay"></div>
 
@@ -94,23 +122,66 @@
 
 <section class="sobre">
     <h2>Sobre Mim</h2>
-    <p>Eu crio sites e soluções digitais que vendem de verdade.</p>
+    <p>Eu crio sites e soluções digitais que vendem de verdade. Meu foco é transformar ideias em páginas profissionais, rápidas e bonitas que geram resultado pra barbearias, lojas e marcas.</p>
 </section>
 
 <section class="projetos">
     <h2>Meus Projetos</h2>
-    <div class="grid-projetos">
-        <div class="card-projeto">
-            <h3>PH Imports</h3>
-            <p>Loja de iPhones com garantia.</p>
-            <a href="#" class="btn-projeto">Ver Projeto</a>
-        </div>
+    <div class="grid-projetos" id="lista-projetos">
+        <div class="loading">Carregando projetos...</div>
     </div>
 </section>
 
-<footer style="text-align:center; padding:20px; background: rgba(0,74,153,0.15); color: #004a99;">
-    <p>© 2026 Edmilson</p>
+<section class="contato">
+    <h2>Vamos trabalhar juntos?</h2>
+    <div class="botoes-contato">
+        <a href="https://wa.me/55SEUNUMERO" target="_blank" class="btn-contato btn-whats">WhatsApp</a>
+        <a href="https://instagram.com/SEUINSTA" target="_blank" class="btn-contato btn-insta">Instagram</a>
+        <a href="mailto:seuemail@gmail.com" class="btn-contato btn-email">E-mail</a>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 Edmilson. Todos os direitos reservados.</p>
 </footer>
+
+<script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRdrODbSUGBAJEGawcIqzyRLGA-P60A1nPnMJH9OTT-MRIuANdilj3rL-mrbslWppKpFG0OTZAa7KtV/pub?output=csv";
+
+async function carregarProjetos() {
+    try {
+        const res = await fetch(CSV_URL);
+        const data = await res.text();
+        const linhas = data.split('\n').slice(1); // pula cabeçalho
+        
+        const container = document.getElementById('lista-projetos');
+        container.innerHTML = ''; // limpa "carregando"
+
+        linhas.forEach(linha => {
+            const [nome, link, descricao, imagem] = linha.split(',');
+            if(!nome) return; // ignora linha vazia
+
+            const card = `
+                <div class="card-projeto">
+                    <img src="${imagem || 'https://via.placeholder.com/400x200/007BFF/FFFFFF?text='+nome}" alt="${nome}">
+                    <div class="card-conteudo">
+                        <h3>${nome}</h3>
+                        <p>${descricao}</p>
+                        <a href="${link}" target="_blank" class="btn-projeto">Ver Site Ao Vivo</a>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += card;
+        });
+
+    } catch (erro) {
+        document.getElementById('lista-projetos').innerHTML = '<p>Erro ao carregar projetos. Verifica se a planilha está pública.</p>';
+        console.error(erro);
+    }
+}
+
+carregarProjetos();
+</script>
 
 </body>
 </html>
