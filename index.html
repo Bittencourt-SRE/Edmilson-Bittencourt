@@ -18,12 +18,22 @@
 .card-projeto{background: rgba(255,255,255,0.95);border-radius: 20px;overflow: hidden;box-shadow: 0 8px 25px rgba(0,74,153,0.2);transition: 0.3s;border: 1px solid rgba(0,123,255,0.2);text-align: left;}
 .card-projeto:hover{transform: translateY(-10px);box-shadow: 0 15px 40px rgba(0,74,153,0.3);}
 
+/* WRAPPER PRA FAZER O FUNDO FICAR BONITO */
+.img-wrapper{
+    width: 100%;
+    height: 200px; /* quadrado fixo */
+    background: #004a99; /* cor de fundo se a foto for pequena */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
 .card-projeto img{
     width: 100%;
-    height: 200px; /* quadrado continua com 200px */
-    object-fit: contain; /* mostra a foto inteira */
-    background: #f0f4f9; /* fundo cinza clarinho pra não ficar buraco branco */
-    padding: 10px; /* dá um respiro na foto */
+    height: 100%;
+    object-fit: contain; /* NÃO CORTA A FOTO */
+    object-position: center;
 }
 
 .card-conteudo{padding: 20px;}
@@ -95,7 +105,9 @@ async function carregarProjetos() {
 
             const card = `
                 <div class="card-projeto">
-                    <img src="${imagem || `https://via.placeholder.com/400x200/007BFF/FFFFFF?text=${encodeURIComponent(projeto['Projeto'])}`}" alt="${projeto['Projeto']}" onerror="this.src='https://via.placeholder.com/400x200/FF0000/FFFFFF?text=Erro+Imagem'">
+                    <div class="img-wrapper">
+                        <img src="${imagem || `https://via.placeholder.com/400x200/007BFF/FFFFFF?text=${encodeURIComponent(projeto['Projeto'])}`}" alt="${projeto['Projeto']}" onerror="this.src='https://via.placeholder.com/400x200/FF0000/FFFFFF?text=Erro+Imagem'">
+                    </div>
                     <div class="card-conteudo">
                         <h3>${projeto['Projeto']}</h3>
                         <p>${projeto['Descricao']}</p>
