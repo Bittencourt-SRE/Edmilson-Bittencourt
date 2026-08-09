@@ -45,35 +45,37 @@
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRdrODbSUGBAJEGawcIqzyRLGA-P60A1nPnMJH9OTT-MRIuANdilj3rL-mrbslWppKpFG0OTZAa7KtV/pub?output=csv";
 
-// CONVERTE LINK DO DRIVE PRA IMAGEM APARECER
+// CONVERSOR AUTOMATICO DE LINK DO DRIVE
 function converterLinkDrive(url) {
     if(!url) return '';
     url = url.trim();
-    if(url.includes('drive.google.com/file/d/')) {
-        const id = url.split('/d/')[1].split('/')[0];
-        return `https://drive.google.com/uc?export=view&id=${id}`;
+
+    let id = '';
+    // Pega ID de https://drive.google.com/file/d/ID/view
+    if(url.includes('/file/d/')){
+        id = url.split('/file/d/')[1].split('/')[0];
     }
-    if(url.includes('drive.google.com/open?id=')) {
-        const id = url.split('id=')[1].split('&')[0];
-        return `https://drive.google.com/uc?export=view&id=${id}`;
+    // Pega ID de https://drive.google.com/open?id=ID
+    else if(url.includes('id=')){
+        id = url.split('id=')[1].split('&')[0];
     }
-    return url;
+
+    if(id) return `https://drive.google.com/uc?export=view&id=${id}`;
+    return url; // se já for link direto, retorna ele
 }
 
-// LE O CSV CORRETO
 function parseCSV(text) {
-    return text.split('\n').map(linha => {
-        const resultado = []; let campo = ''; let dentroAspas = false;
-        for(let i=0; i<linha.length; i++){
-            let char = linha[i];
-            if(char === '"' && linha[i+1] === '"'){ campo += '"'; i++; }
-            else if(char === '"'){ dentroAspas =!dentroAspas; }
-            else if(char === ',' &&!dentroAspas){ resultado.push(campo); campo = ''; }
-            else{ campo += char; }
-        }
-        resultado.push(campo);
-        return resultado;
-    });
+    const linhas = []; let linha = []; let campo = ''; let aspas = false;
+    for(let i=0; i<text.length; i++){
+        let c = text[i], p = text[i+1];
+        if(c === '"' && p === '"'){ campo += '"'; i++; }
+        else if(c === '"'){ aspas =!aspas; }
+        else if(c === ',' &&!aspas){ linha.push(campo); campo = ''; }
+        else if((c === '\n' || c === '\r') &&!aspas){ linha.push(campo); linhas.push(linha); linha = []; campo = ''; }
+        else{ campo += c; }
+    }
+    if(campo || linha.length) { linha.push(campo); linhas.push(linha); }
+    return linhas;
 }
 
 async function carregarProjetos() {
@@ -81,24 +83,20 @@ async function carregarProjetos() {
         const res = await fetch(CSV_URL);
         const data = await res.text();
         const linhas = parseCSV(data);
-        linhas.shift(); // remove cabeçalho: Projeto, Link Site, Descricao, Imagem Capa
+        linhas.shift(); // remove cabeçalho
 
         const container = document.getElementById('lista-projetos');
         container.innerHTML = '';
 
         linhas.forEach(linha => {
-            if(linha.length < 4 ||!linha[0]) return; // ignora linha vazia
+            const [nome, link, descricao, imagem] = linha.map(i => i? i.trim() : '');
+            if(!nome) return;
 
-            const nome = linha[0].trim();
-            const link = linha[1].trim();
-            const descricao = linha[2].trim();
-            const imagem = linha[3].trim();
-
-            const imagemCorrigida = converterLinkDrive(imagem);
+            const imagemFinal = converterLinkDrive(imagem); // << CONVERTE AQUI
 
             const card = `
                 <div class="card-projeto">
-                    <img src="${imagemCorrigida || 'https://via.placeholder.com/400x200/007BFF/FFFFFF?text='+encodeURIComponent(nome)}" alt="${nome}" onerror="this.src='https://via.placeholder.com/400x200/FF0000/FFFFFF?text=Erro+Imagem'">
+                    <img src="${imagemFinal || `https://via.placeholder.com/400x200/007BFF/FFFFFF?text=${encodeURIComponent(nome)}`}" alt="${nome}" onerror="this.src='https://via.placeholder.com/400x200/FF0000/FFFFFF?text=Erro+Imagem'">
                     <div class="card-conteudo">
                         <h3>${nome}</h3>
                         <p>${descricao}</p>
